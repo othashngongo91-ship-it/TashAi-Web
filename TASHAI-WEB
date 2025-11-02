@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TashAi</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.app-container {
+  width: 350px;
+  max-width: 95%;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #4a90e2;
+  color: white;
+}
+.header .logo {
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+}
+.chat-container {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #eaeaea;
+}
+.message {
+  margin: 5px 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+.message.bot {
+  background-color: #4a90e2;
+  color: white;
+  align-self: flex-start;
+}
+.message.user {
+  background-color: #ccc;
+  color: black;
+  align-self: flex-end;
+}
+.input-container {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+#user-input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+#send-btn {
+  padding: 10px 15px;
+  border: none;
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="app-container">
+  <div class="header">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABOElEQVRYR+2XwQ2CMBCEv+wgDsyG4gdwuh5h9EO+Ij6GMP4kHOkW8TxqT8j9/gZBlCiCGwD2INq6I0KwGxY3x7G6gV1d0AsYE5juwOZ7jJmGn4xQIBAm3aP3h3LPhDlsvYH+BHkVebpR76oiU+AA1PiwQ0Jhz8kJgMGyT1oCx4X2HkH1Z4m5bIb9OqgiH3hYhICLhMIPq4V5hL1PgK9yDve/YWwP9h0mZoy78XSw6BPG+K8oRiqlRBCF+QOMZK5H0IGiNcrBx9FAAAAABJRU5ErkJggg==" alt="TashAi Logo" class="logo">
+    <h1>TashAi</h1>
+  </div>
+  <div class="chat-container" id="chat-container">
+    <div class="message bot">Hello! I am TashAi. How can I help you today?</div>
+  </div>
+  <div class="input-container">
+    <input type="text" id="user-input" placeholder="Type your message..." autofocus>
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+<script>
+const chatContainer = document.getElementById('chat-container');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+
+const personalities = {
+  friendly: ["Hi there! 😊","How's your day going?","I'm happy to chat with you!"],
+  serious: ["Please provide details.","I need accurate information.","Let's stay focused."],
+  funny: ["Why did the chicken cross the road? To chat with you! 😂","I'm full of jokes!","Hehe, that's funny!"]
+};
+
+let currentPersonality = "friendly";
+
+function getResponse(input) {
+  input = input.toLowerCase();
+  if (input.includes("be serious")) currentPersonality = "serious";
+  else if (input.includes("be funny")) currentPersonality = "funny";
+  else if (input.includes("be friendly")) currentPersonality = "friendly";
+
+  const responses = personalities[currentPersonality];
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+function appendMessage(sender, text) {
+  const msgDiv = document.createElement('div');
+  msgDiv.classList.add('message', sender);
+  msgDiv.textContent = text;
+  chatContainer.appendChild(msgDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+sendBtn.addEventListener('click', () => {
+  const text = userInput.value.trim();
+  if (!text) return;
+  appendMessage('user', text);
+  userInput.value = '';
+  setTimeout(() => { appendMessage('bot', getResponse(text)); }, 500);
+});
+
+userInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendBtn.click();
+});
+</script>
+</body>
+</html>
